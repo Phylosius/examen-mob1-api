@@ -1,7 +1,7 @@
 import * as cors from "cors";
 import * as express from "express";
 
-import { errorHandler, securityHandler } from "@/middlewares";
+import { errorHandler, requestLogger, securityHandler } from "@/middlewares";
 import { authRouter, goalListRouter, goalRouter, labelRouter, projectRouter, swaggerRouter, transactionListRouter, transactionRouter } from "@/routes";
 
 import { walletRouter } from "./routes/wallet-routes";
@@ -13,6 +13,7 @@ export const server = async () => {
     const app = express();
     app.use(express.json());
     app.use(cors());
+    app.use(requestLogger);
 
     app.use("/auth", authRouter);
 
