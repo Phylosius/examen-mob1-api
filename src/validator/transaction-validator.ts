@@ -6,7 +6,7 @@ import { TransactionFilters } from "@/types";
 
 const createTransactionSchema = z.object({
   date: z.refine((value) => new Date(value as string).toString() !== "Invalid Date", "Date invalide"),
-  labels: z.array(z.object({ id: z.string() })).min(1),
+  labels: z.array(z.object({ id: z.string() })).optional().default([]),
   type: z.refine((type: string) => ["IN", "OUT"].includes(type), "Type should be one of : IN, OUT"),
   amount: z.number().min(1),
 });

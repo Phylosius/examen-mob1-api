@@ -12,11 +12,9 @@ export class TransactionController {
 
       TransactionValidator.create(req.body);
       const mappedCreateTransaction = TransactionMapper.create(accountId, walletId, req.body);
-      const labels = req.body.labels;
+      const labels = req.body.labels || [];
 
-      if (!labels || labels.length === 0) throw new BadRequestError("One label is expected at least");
-
-      const data = await TransactionServices.create(accountId, walletId, mappedCreateTransaction, req.body.labels);
+      const data = await TransactionServices.create(accountId, walletId, mappedCreateTransaction, labels);
       res.json(TransactionMapper.toRest(data));
     } catch (error) {
       next(error);
@@ -30,8 +28,7 @@ export class TransactionController {
 
       TransactionValidator.update(accountId, label);
       const mappedUpdateTransaction = TransactionMapper.update(accountId, walletId as string, req.body);
-      const labels = req.body.labels;
-      if (!labels || labels.length === 0) throw new BadRequestError("One label is expected at least");
+      const labels = req.body.labels || [];
 
       const data = await TransactionServices.update(accountId, walletId, transactionId, mappedUpdateTransaction, labels);
       res.json(TransactionMapper.toRest(data));
