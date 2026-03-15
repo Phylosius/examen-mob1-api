@@ -12,7 +12,9 @@ export const securityHandler: RequestHandler<any, any, any, any, any> = (req, _r
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     const decodedAccount = decoded?.valueOf() as any;
-    if (err || accountId !== decodedAccount.id) throw new ApiError("Invalid token", 403);
+    if (err || accountId !== decodedAccount.id) {
+      return _next(new ApiError("Invalid token", 403));
+    }
     (req as any).account = decodedAccount;
     _next();
   });

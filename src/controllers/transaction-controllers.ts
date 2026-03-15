@@ -6,7 +6,7 @@ import { TransactionServices } from "@/services";
 import { TransactionValidator } from "@/validator";
 
 export class TransactionController {
-  static readonly create: RequestHandler = async (req, res, _next) => {
+  static readonly create: RequestHandler = async (req, res, next) => {
     try {
       const { walletId, accountId } = req.params as Record<string, string>;
 
@@ -19,10 +19,10 @@ export class TransactionController {
       const data = await TransactionServices.create(accountId, walletId, mappedCreateTransaction, req.body.labels);
       res.json(TransactionMapper.toRest(data));
     } catch (error) {
-      res.json({ code: error.status, message: error.message });
+      next(error);
     }
   };
-  static readonly update: RequestHandler = async (req, res, _next) => {
+  static readonly update: RequestHandler = async (req, res, next) => {
     try {
       const label = req.body;
       const accountId = (req as any).account.id;
@@ -36,28 +36,28 @@ export class TransactionController {
       const data = await TransactionServices.update(accountId, walletId, transactionId, mappedUpdateTransaction, labels);
       res.json(TransactionMapper.toRest(data));
     } catch (error) {
-      res.json({ code: error.status, message: error.message });
+      next(error);
     }
   };
-  static readonly getOne: RequestHandler = async (req, res, _next) => {
+  static readonly getOne: RequestHandler = async (req, res, next) => {
     try {
       const { walletId, accountId, transactionId } = req.params as Record<string, string>;
       const data = await TransactionServices.getOneById(accountId, walletId, transactionId);
       res.json(TransactionMapper.toRest(data));
     } catch (error) {
-      res.json({ code: error.status, message: error.message });
+      next(error);
     }
   };
-  static readonly deleteOne: RequestHandler = async (req, res, _next) => {
+  static readonly deleteOne: RequestHandler = async (req, res, next) => {
     try {
       const { walletId, accountId, transactionId } = req.params as Record<string, string>;
       const data = await TransactionServices.deleteOneById(accountId, walletId, transactionId);
       res.json(TransactionMapper.toRest(data));
     } catch (error) {
-      res.json({ code: error.status, message: error.message });
+      next(error);
     }
   };
-  static readonly getAll: RequestHandler = async (req, res, _next) => {
+  static readonly getAll: RequestHandler = async (req, res, next) => {
     try {
       const { page, pageSize } = req as any;
       const { accountId } = req.params as Record<string, string>;
@@ -65,7 +65,7 @@ export class TransactionController {
       const data = await TransactionServices.getAll(accountId, { page, pageSize, ...req.query });
       res.json(data.map(TransactionMapper.toRest));
     } catch (error) {
-      res.json({ code: error.status, message: error.message });
+      next(error);
     }
   };
 }
